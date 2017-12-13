@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Building_Management.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Building_Management.Models
+namespace Building_Management.Infrastructure
 {
     public class BuildingManagementContext : DbContext
     {
