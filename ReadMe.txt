@@ -3,10 +3,12 @@ jebel
 password
 
 To Add Migrations, navigate to the project directory where the models reside and run: 
-dotnet ef migrations add InitialMigration -s ../BillZip
+dotnet ef migrations add InitialMigration -s ../BillZip --context IdentityContext
+where IdentityContext is replaced by the context you want to run operations on.
 
 TO run migrations, navigate to the project directory where models reside and run:
-dotnet ef database update -s ../BillZip
+dotnet ef database update -s ../BillZip --context IdentityContext
+where IdentityContext is replaced by the context you want to run operations on.
 
 Swagger UI is enabled in Debug/dev...  Access this as follows:
 http://localhost:34791/swagger/

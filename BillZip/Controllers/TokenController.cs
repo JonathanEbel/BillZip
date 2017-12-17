@@ -23,7 +23,7 @@ namespace BillZip.Controllers
                                 .AddSubject("Jon Ebel")
                                 .AddIssuer("Test.Security.Bearer")
                                 .AddAudience("Test.Security.Bearer")
-                                .AddClaim("EmployeeNumber", "6109")
+                                .AddClaim("role", "tenent")
                                 .AddExpiry(5)
                                 .Build();
 

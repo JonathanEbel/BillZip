@@ -1,7 +1,10 @@
 ﻿using Building_Management.Infrastructure;
+using Identity.Infrastructure;
+using Identity.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -70,7 +73,34 @@ namespace BillZip
             services.AddMvc();
             services.AddEntityFrameworkNpgsql().AddDbContext<BuildingManagementContext>(opt => 
                 opt.UseNpgsql(Configuration.GetConnectionString("BuildingManagementConnection")));
-#if DEBUG 
+
+            services.AddEntityFrameworkNpgsql().AddDbContext<IdentityContext>(opt =>
+                    opt.UseNpgsql(Configuration.GetConnectionString("IdentityConnection")))
+                .AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<IdentityContext>()
+                .AddDefaultTokenProviders();
+
+            services.Configure<IdentityOptions>(options =>
+            {
+#if RELEASE
+                // Password settings
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 8;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = false;
+                options.Password.RequiredUniqueChars = 6;
+
+                // Lockout settings
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
+                options.Lockout.MaxFailedAccessAttempts = 10;
+                options.Lockout.AllowedForNewUsers = true;
+#endif
+                // User settings
+                options.User.RequireUniqueEmail = true;
+            });
+
+#if DEBUG
             // Register the Swagger generator, defining one or more Swagger documents
             services.AddSwaggerGen(c =>
             {
