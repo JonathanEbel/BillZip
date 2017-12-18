@@ -1,13 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Identity.Models;
 using BillZip.Provider.JWT;
+using System.Collections.Generic;
 
 namespace BillZip.Controllers
 {
@@ -31,14 +27,14 @@ namespace BillZip.Controllers
             {
                 return BadRequest(ModelState);
             }
-
+            
             var user = new ApplicationUser
             {
                 UserName = dto.UserName,
                 Email = dto.UserName,
-                claims = {
+                claims = new List<ApplicationUserClaim>(){
                     new ApplicationUserClaim {   
-                        //TODO get these from a list of constants.....
+                        //TODO: get these from a list of constants or enums.....
                         claimKey = "role",
                         claimValue = "tenent"
                     }
@@ -52,7 +48,7 @@ namespace BillZip.Controllers
             if (result.Succeeded)
             {
                 var token = new JwtTokenBuilder()
-                                .AddSecurityKey(JwtSecurityKey.Create("Test-secret-key-1234"))
+                                .AddSecurityKey(JwtSecurityKey.Create("Test-secret-key-1234"))  
                                 .AddSubject("Jon Ebel")
                                 .AddIssuer("Test.Security.Bearer")
                                 .AddAudience("Test.Security.Bearer")
@@ -60,7 +56,6 @@ namespace BillZip.Controllers
                                 .AddExpiry(5)
                                 .Build();
 
-                //return Ok(token);
                 return Ok(token.Value);
             }
             else
@@ -72,8 +67,7 @@ namespace BillZip.Controllers
 
                 return StatusCode(500, ModelState);  //return the errors..
             }
-
-            return StatusCode(201);
+            
         }
     }
 }

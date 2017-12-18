@@ -37,8 +37,8 @@ namespace BillZip
                                  ValidateLifetime = true,
                                  ValidateIssuerSigningKey = true,
 
-                                 ValidIssuer = "Test.Security.Bearer",
-                                 ValidAudience = "Test.Security.Bearer",
+                                 ValidIssuer = "BillZip.Security.Bearer",
+                                 ValidAudience = "BillZip.Security.Bearer",
                                  IssuerSigningKey =
                                  Provider.JWT.JwtSecurityKey.Create("Test-secret-key-1234")
                              };
