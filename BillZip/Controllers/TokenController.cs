@@ -23,10 +23,7 @@ namespace BillZip.Controllers
         [HttpPost]
         public async System.Threading.Tasks.Task<IActionResult> CreateAsync([FromBody]LoginInputModel inputModel)
         {
-            //TODO: set this up to pull from the database....
-            //if (inputModel.Username != "jon" && inputModel.Password != "password")
-            //    return Unauthorized();
-
+            
             var result = await _signInManager.PasswordSignInAsync(inputModel.Username, inputModel.Password, true, false);
             if (!result.Succeeded)
                 return Unauthorized();
@@ -40,7 +37,6 @@ namespace BillZip.Controllers
                                 .AddExpiry(5)
                                 .Build();
 
-            //return Ok(token);
             return Ok(token.Value);
         }
     }
