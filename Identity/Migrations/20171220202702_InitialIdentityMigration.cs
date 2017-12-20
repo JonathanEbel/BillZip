@@ -12,20 +12,11 @@ namespace Identity.Migrations
                 name: "ApplicationUsers",
                 columns: table => new
                 {
-                    Id = table.Column<string>(nullable: false),
-                    AccessFailedCount = table.Column<int>(nullable: false),
-                    ConcurrencyStamp = table.Column<string>(nullable: true),
-                    Email = table.Column<string>(nullable: true),
-                    EmailConfirmed = table.Column<bool>(nullable: false),
-                    LockoutEnabled = table.Column<bool>(nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
-                    NormalizedEmail = table.Column<string>(nullable: true),
-                    NormalizedUserName = table.Column<string>(nullable: true),
-                    PasswordHash = table.Column<string>(nullable: true),
-                    PhoneNumber = table.Column<string>(nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(nullable: false),
-                    SecurityStamp = table.Column<string>(nullable: true),
-                    TwoFactorEnabled = table.Column<bool>(nullable: false),
+                    Id = table.Column<Guid>(nullable: false),
+                    DateCreated = table.Column<DateTime>(nullable: false),
+                    LastLogin = table.Column<DateTime>(nullable: false),
+                    Password = table.Column<string>(nullable: true),
+                    Salt = table.Column<string>(nullable: true),
                     UserName = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -38,7 +29,7 @@ namespace Identity.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(nullable: false),
-                    ApplicationUserId = table.Column<string>(nullable: true),
+                    ApplicationUserId = table.Column<Guid>(nullable: true),
                     claimKey = table.Column<string>(nullable: true),
                     claimValue = table.Column<string>(nullable: true)
                 },
@@ -57,6 +48,18 @@ namespace Identity.Migrations
                 name: "IX_ApplicationUserClaims_ApplicationUserId",
                 table: "ApplicationUserClaims",
                 column: "ApplicationUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ApplicationUsers_Id",
+                table: "ApplicationUsers",
+                column: "Id",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ApplicationUsers_UserName",
+                table: "ApplicationUsers",
+                column: "UserName",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

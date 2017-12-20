@@ -11,8 +11,8 @@ using System;
 namespace Identity.Migrations
 {
     [DbContext(typeof(IdentityContext))]
-    [Migration("20171218033018_IdentityMigration")]
-    partial class IdentityMigration
+    [Migration("20171220202702_InitialIdentityMigration")]
+    partial class InitialIdentityMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,38 +23,26 @@ namespace Identity.Migrations
 
             modelBuilder.Entity("Identity.Models.ApplicationUser", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("AccessFailedCount");
+                    b.Property<DateTime>("DateCreated");
 
-                    b.Property<string>("ConcurrencyStamp");
+                    b.Property<DateTime>("LastLogin");
 
-                    b.Property<string>("Email");
+                    b.Property<string>("Password");
 
-                    b.Property<bool>("EmailConfirmed");
-
-                    b.Property<bool>("LockoutEnabled");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd");
-
-                    b.Property<string>("NormalizedEmail");
-
-                    b.Property<string>("NormalizedUserName");
-
-                    b.Property<string>("PasswordHash");
-
-                    b.Property<string>("PhoneNumber");
-
-                    b.Property<bool>("PhoneNumberConfirmed");
-
-                    b.Property<string>("SecurityStamp");
-
-                    b.Property<bool>("TwoFactorEnabled");
+                    b.Property<string>("Salt");
 
                     b.Property<string>("UserName");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Id")
+                        .IsUnique();
+
+                    b.HasIndex("UserName")
+                        .IsUnique();
 
                     b.ToTable("ApplicationUsers");
                 });
@@ -64,7 +52,7 @@ namespace Identity.Migrations
                     b.Property<Guid>("id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("ApplicationUserId");
+                    b.Property<Guid?>("ApplicationUserId");
 
                     b.Property<string>("claimKey");
 
@@ -80,7 +68,7 @@ namespace Identity.Migrations
             modelBuilder.Entity("Identity.Models.ApplicationUserClaim", b =>
                 {
                     b.HasOne("Identity.Models.ApplicationUser")
-                        .WithMany("claims")
+                        .WithMany("Claims")
                         .HasForeignKey("ApplicationUserId");
                 });
 #pragma warning restore 612, 618

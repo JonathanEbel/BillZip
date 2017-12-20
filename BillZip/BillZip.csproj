@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Building_Management\Building_Management.csproj" />
+    <ProjectReference Include="..\Core\Core.csproj" />
     <ProjectReference Include="..\Identity\Identity.csproj" />
   </ItemGroup>
 

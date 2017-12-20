@@ -2,9 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using BillZip.AuthModels;
 using BillZip.Provider.JWT;
-using Microsoft.AspNetCore.Identity;
-using Identity.Models;
 using System.Collections.Generic;
+using Identity.Infrastructure.Repos;
 
 namespace BillZip.Controllers
 {
@@ -14,21 +13,21 @@ namespace BillZip.Controllers
 
     public class TokenController : Controller
     {
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IApplicationUserRepository _applicationUserRepository;
 
-        public TokenController(/*SignInManager<ApplicationUser> signInManager*/)
+        public TokenController(IApplicationUserRepository applicationUserRepository)
         {
-           // _signInManager = signInManager;
+            _applicationUserRepository = applicationUserRepository;
         }
 
         [HttpPost]
-        public async System.Threading.Tasks.Task<IActionResult> CreateAsync([FromBody]LoginInputModel inputModel)
+        public IActionResult Create([FromBody]LoginInputModel inputModel)
         {
             
-            //var result = await _signInManager.PasswordSignInAsync(inputModel.Username, inputModel.Password, true, false);
-            //if (!result.Succeeded)
-            //    return Unauthorized();
-            
+            if (!_applicationUserRepository.UserAuthenticates(inputModel.Username, inputModel.Password))
+                return Unauthorized();
+
+            //claims will need to be a list and dynamic...
             var token = new JwtTokenBuilder()
                                 .AddSecurityKey(JwtSecurityKey.Create("Test-secret-key-1234"))
                                 .AddSubject("Jon Ebel")
@@ -41,6 +40,7 @@ namespace BillZip.Controllers
 
 
             return Ok(token.Value);
+                
         }
     }
 
