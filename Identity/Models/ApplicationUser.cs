@@ -31,10 +31,15 @@ namespace Identity.Models
             Salt = Crypto.getSalt();
             Password = Crypto.getHash(password + Salt);
 
-            DateCreated = DateTime.UtcNow;
+            DateCreated = DateTime.Now;
 
             //add Claims
             Claims = claims;
+        }
+
+        public void UpdateLastLogin()
+        {
+            LastLogin = DateTime.Now;
         }
 
 

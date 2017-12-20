@@ -21,25 +21,17 @@ namespace BillZip.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody]LoginInputModel inputModel)
+        public IActionResult Create([FromBody]LoginDto loginDto)
         {
             
-            if (!_applicationUserRepository.UserAuthenticates(inputModel.Username, inputModel.Password))
+            if (!_applicationUserRepository.UserAuthenticates(loginDto.Username, loginDto.Password))
                 return Unauthorized();
 
-            //claims will need to be a list and dynamic...
-            var token = new JwtTokenBuilder()
-                                .AddSecurityKey(JwtSecurityKey.Create("Test-secret-key-1234"))
-                                .AddSubject("Jon Ebel")
-                                .AddIssuer("BillZip.Security.Bearer")
-                                .AddAudience("BillZip.Security.Bearer")
-                                .AddClaim("EmployeeNumber", "5656545")
-                                .AddClaim("ThisOne","78676576")
-                                .AddExpiry(500)
-                                .Build();
-
-
-            return Ok(token.Value);
+            var user = _applicationUserRepository.Get(loginDto.Username);
+            user.UpdateLastLogin();   //we will count this as a login, so we need to update te last login date...
+            _applicationUserRepository.Save();
+            
+            return Ok(UserJwtToken.GetToken(loginDto.Username, user.Claims));
                 
         }
     }

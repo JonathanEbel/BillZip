@@ -4,6 +4,7 @@ using Identity.Models;
 using System;
 using System.Linq;
 using Core.Cryptography;
+using Microsoft.EntityFrameworkCore;
 
 namespace Identity.Infrastructure.Repos
 {
@@ -12,6 +13,7 @@ namespace Identity.Infrastructure.Repos
         PagedResult<ApplicationUser> FindAll(QueryConstraints<ApplicationUser> constraints);
         PagedResult<ApplicationUser> FindByUserName(string text, QueryConstraints<ApplicationUser> constraints);
         bool UserAuthenticates(string userName, string password);
+        ApplicationUser Get(string userName);
     }
 
 
@@ -54,6 +56,11 @@ namespace Identity.Infrastructure.Repos
         public ApplicationUser Get(Guid id)
         {
             return _dbContext.ApplicationUsers.Where(x => x.Id == id).FirstOrDefault();
+        }
+
+        public ApplicationUser Get(string userName)
+        {
+            return _dbContext.ApplicationUsers.Include(x => x.Claims).Where(x => x.UserName == userName).FirstOrDefault();
         }
 
         public bool UserAuthenticates(string userName, string password)
