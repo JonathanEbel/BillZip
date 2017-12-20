@@ -41,6 +41,7 @@ namespace BillZip
                                  ValidAudience = "BillZip.Security.Bearer",
                                  IssuerSigningKey =
                                  Provider.JWT.JwtSecurityKey.Create("Test-secret-key-1234")
+                                 
                              };
 
                         options.Events = new JwtBearerEvents
@@ -74,11 +75,11 @@ namespace BillZip
             services.AddEntityFrameworkNpgsql().AddDbContext<BuildingManagementContext>(opt => 
                 opt.UseNpgsql(Configuration.GetConnectionString("BuildingManagementConnection")));
 
-            services.AddEntityFrameworkNpgsql().AddDbContext<IdentityContext>(opt =>
-                    opt.UseNpgsql(Configuration.GetConnectionString("IdentityConnection")))
-                .AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<IdentityContext>()
-                .AddDefaultTokenProviders();
+            //services.AddEntityFrameworkNpgsql().AddDbContext<IdentityContext>(opt =>
+            //        opt.UseNpgsql(Configuration.GetConnectionString("IdentityConnection")))
+            //    .AddIdentity<ApplicationUser, IdentityRole>()
+            //    .AddEntityFrameworkStores<IdentityContext>();
+            //    //.AddDefaultTokenProviders();
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -125,8 +126,9 @@ namespace BillZip
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "BillZip API V1");
             });
 #endif
+
             app.UseAuthentication();
-            app.UseMvc();
+            app.UseMvcWithDefaultRoute();
         }
     }
 }
