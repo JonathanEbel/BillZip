@@ -1,11 +1,10 @@
-﻿using Building_Management.Infrastructure;
+﻿using BillZip.Provider.JWT;
+using Building_Management.Infrastructure;
 using Identity.Infrastructure;
 using Identity.Infrastructure.Repos;
-using Identity.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,13 +37,13 @@ namespace BillZip
                                  ValidateLifetime = true,
                                  ValidateIssuerSigningKey = true,
 
-                                 ValidIssuer = "BillZip.Security.Bearer",
-                                 ValidAudience = "BillZip.Security.Bearer",
+                                 ValidIssuer = UserJwtToken.tokenIssuer,
+                                 ValidAudience = UserJwtToken.tokenAudience,
                                  IssuerSigningKey =
-                                 Provider.JWT.JwtSecurityKey.Create("Test-secret-key-1234")
+                                 JwtSecurityKey.Create(UserJwtToken.secretKey)
                                  
                              };
-
+                        //TODO: turn these off in RELEASE unless they are logging....
                         options.Events = new JwtBearerEvents
                         {
                             OnAuthenticationFailed = context =>
@@ -78,6 +77,8 @@ namespace BillZip
 
             services.AddEntityFrameworkNpgsql().AddDbContext<IdentityContext>(opt =>
                 opt.UseNpgsql(Configuration.GetConnectionString("IdentityConnection")));
+
+            services.Configure<AppSettingsSingleton>(Configuration.GetSection("AppSettings"));
 
             //Set up any other items in my IoC container....
             services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();

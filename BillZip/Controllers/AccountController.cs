@@ -3,6 +3,7 @@ using Identity.Models;
 using BillZip.Provider.JWT;
 using System.Collections.Generic;
 using Identity.Infrastructure.Repos;
+using Microsoft.Extensions.Options;
 
 namespace BillZip.Controllers
 {
@@ -10,10 +11,12 @@ namespace BillZip.Controllers
     public class AccountController : Controller
     {
         private readonly IApplicationUserRepository _applicationUserRepository;
+        private readonly AppSettingsSingleton _appSettings;
 
-        public AccountController(IApplicationUserRepository applicationUserRepository)
+        public AccountController(IApplicationUserRepository applicationUserRepository, IOptions<AppSettingsSingleton> appSettings)
         {
             _applicationUserRepository = applicationUserRepository;
+            _appSettings = appSettings.Value;
         }
 
         [HttpPost]
@@ -44,7 +47,7 @@ namespace BillZip.Controllers
             _applicationUserRepository.Save();
 
 
-            return Ok(UserJwtToken.GetToken(dto.UserName, user.Claims));
+            return Ok(UserJwtToken.GetToken(dto.UserName, user.Claims, _appSettings.tokenExpirationInMinutes));
 
 
         }

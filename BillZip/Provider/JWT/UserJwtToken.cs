@@ -1,18 +1,25 @@
 ﻿using Identity.Models;
+using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 
 namespace BillZip.Provider.JWT
 {
     public static class UserJwtToken
     {
-        public static string GetToken(string userName, List<ApplicationUserClaim> claims)
+        public static string tokenIssuer = "BillZip.Security.Bearer";
+        public static string tokenAudience = "BillZip.Security.Bearer";
+        public static string secretKey = "Test-secret-key-1234";
+
+
+        public static string GetToken(string userName, List<ApplicationUserClaim> claims, int expirationInMinutes)
         {
+            //TODO: put these hardcoded strings in a config file...
             var token = new JwtTokenBuilder()
-                                .AddSecurityKey(JwtSecurityKey.Create("Test-secret-key-1234"))
+                                .AddSecurityKey(JwtSecurityKey.Create(secretKey))
                                 .AddSubject(userName)
-                                .AddIssuer("BillZip.Security.Bearer")
-                                .AddAudience("BillZip.Security.Bearer")
-                                .AddExpiry(500);
+                                .AddIssuer(tokenIssuer)
+                                .AddAudience(tokenAudience)
+                                .AddExpiry(expirationInMinutes);
 
             foreach (var claim in claims)
             {
