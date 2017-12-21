@@ -1,5 +1,4 @@
 ﻿using Identity.Models;
-using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 
 namespace BillZip.Provider.JWT
@@ -13,7 +12,6 @@ namespace BillZip.Provider.JWT
 
         public static string GetToken(string userName, List<ApplicationUserClaim> claims, int expirationInMinutes)
         {
-            //TODO: put these hardcoded strings in a config file...
             var token = new JwtTokenBuilder()
                                 .AddSecurityKey(JwtSecurityKey.Create(secretKey))
                                 .AddSubject(userName)
