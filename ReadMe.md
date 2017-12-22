@@ -1,15 +1,15 @@
 # BillZip
 
 You must have postresql installed with a user as follows on localhost:
-	- jebel
-	- password
+jebel
+password
 
 To Add Migrations, navigate to the project directory where the models reside and run: 
-	- _dotnet ef migrations add InitialMigration -s ../BillZip --context IdentityContext_
+_dotnet ef migrations add InitialMigration -s ../BillZip --context IdentityContext_
 ...where "IdentityContext" is replaced by the context you want to run operations on.
 
 To run migrations, navigate to the project directory where models reside and run:
-	- _dotnet ef database update -s ../BillZip --context IdentityContext_
+_dotnet ef database update -s ../BillZip --context IdentityContext_
 ...where "IdentityContext" is replaced by the context you want to run operations on.
 
 Swagger UI is enabled in Debug/dev...  Access this as follows:
