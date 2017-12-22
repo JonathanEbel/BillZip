@@ -14,3 +14,18 @@ Swagger UI is enabled in Debug/dev...  Access this as follows:
 http://localhost:34791/swagger/
 ...or the raw json:
 http://localhost:34791/swagger/v1/swagger.json
+
+
+To run this app for the first time:
+1) Download .net core 2.0 for your operating system
+2) Navigate to the project directory and type:
+	"dotnet restore""
+	"dotnet build""
+3) cd to Identity directory and run:
+	"dotnet ef database update -s ../BillZip --context IdentityContext"
+4) cd toBUilding_management directory and run:
+	"dotnet ef database update -s ../BillZip --context BuildingManagementContext"
+5) cd to BillZip directory and run:
+	"dotnet run"
+
+That's it!
