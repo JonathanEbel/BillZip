@@ -31,14 +31,12 @@ namespace BillZip.Controllers
             //They need to be passed in from the client but I need to think about this first....
             var claims = new List<ApplicationUserClaim>(){
                     new ApplicationUserClaim {   
-                        //TODO: get these from a list of constants or enums.....
-                        claimKey = "EmployeeNumber",
-                        claimValue = "tenent_5656545"
+                        claimKey = Policies.Landlord.RequireClaim,
+                        claimValue = Policies.Landlord.RequiredValues[0]
                     },
                     new ApplicationUserClaim {   
-                        //TODO: get these from a list of constants or enums.....
-                        claimKey = "Role",
-                        claimValue = "landlord"
+                        claimKey = Policies.Admin.RequireClaim,
+                        claimValue = ""
                     }
             };
 
