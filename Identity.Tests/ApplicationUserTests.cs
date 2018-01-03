@@ -1,5 +1,4 @@
 using System; 
-using System.Collections.Generic;
 using Xunit;
 using Core.Cryptography;
 
@@ -10,18 +9,11 @@ namespace Identity.Tests
         [Fact]
         public void EmailAddressValidated()
         {
-            var userClaims = new List<Models.ApplicationUserClaim>();
-            userClaims.Add(new Models.ApplicationUserClaim
-            {
-                claimKey = "Test",
-                claimValue = "yes"
-            });
+            Assert.Throws<FormatException>(() => new Models.ApplicationUser("jebel.com", "password", "password"));
+            Assert.Throws<FormatException>(() => new Models.ApplicationUser("jebel@comsdf", "password", "password"));
+            Assert.Throws<FormatException>(() => new Models.ApplicationUser("jebel@", "password", "password"));
 
-            Assert.Throws<FormatException>(() => new Models.ApplicationUser("jebel.com", "password", "password", userClaims));
-            Assert.Throws<FormatException>(() => new Models.ApplicationUser("jebel@comsdf", "password", "password", userClaims));
-            Assert.Throws<FormatException>(() => new Models.ApplicationUser("jebel@", "password", "password", userClaims));
-
-            var newUser  = new Models.ApplicationUser("jebel@hello.com", "password", "password", userClaims);
+            var newUser  = new Models.ApplicationUser("jebel@hello.com", "password", "password");
             Assert.Equal("jebel@hello.com", newUser.UserName);
         }
 

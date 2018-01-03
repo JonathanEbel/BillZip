@@ -13,13 +13,13 @@ namespace Identity.Models
         public string Salt { get; private set; }
         public DateTime LastLogin { get; private set; }
         public DateTime DateCreated { get; private set; }
-        public List<ApplicationUserClaim> Claims { get; set; }
+        public List<ApplicationUserClaim> Claims { get; private set; }
 
 
         public ApplicationUser()
         { }
 
-        public ApplicationUser(string userName, string password, string confirmPassword, List<ApplicationUserClaim> claims)
+        public ApplicationUser(string userName, string password, string confirmPassword)
         {
             if (confirmPassword != password)
                 throw new ArgumentException("Password and Confirm Password parameters don't match");
@@ -32,16 +32,26 @@ namespace Identity.Models
             Password = Crypto.getHash(password + Salt);
 
             DateCreated = DateTime.Now;
-
-            //add Claims
-            Claims = claims;
         }
+
 
         public void UpdateLastLogin()
         {
             LastLogin = DateTime.Now;
         }
 
+
+        public void AddClaim(string key, string value)
+        {
+            if (Claims == null)
+                Claims = new List<ApplicationUserClaim>();
+
+            Claims.Add(new ApplicationUserClaim
+            {
+                claimKey = key,
+                claimValue = value
+            });
+        }
 
         private void SetEmailAddressUserName(string userName)
         {
