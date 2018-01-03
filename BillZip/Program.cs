@@ -15,6 +15,7 @@ namespace BillZip
             var host = BuildWebHost(args);
 
             //I'm not a fan of service locator pattern is but it will work for now in this situation....
+            //Seed the Identity DB if needed..
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;

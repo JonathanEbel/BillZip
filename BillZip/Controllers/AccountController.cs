@@ -3,6 +3,8 @@ using Identity.Models;
 using BillZip.Provider.JWT;
 using Identity.Infrastructure.Repos;
 using Microsoft.Extensions.Options;
+using System;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BillZip.Controllers
 {
@@ -37,5 +39,20 @@ namespace BillZip.Controllers
 
             return Ok(UserJwtToken.GetToken(dto.UserName, user.Claims, _appSettings.tokenExpirationInMinutes));
         }
+
+        [HttpDelete]
+        [Authorize(Policy = Policies.Admin.PolicyName)]
+        public IActionResult Delete([FromBody] string userName)
+        {
+            var user = _applicationUserRepository.Get(userName);
+            if (user == null)
+                return BadRequest();
+
+            _applicationUserRepository.Delete(user);
+            _applicationUserRepository.Save();
+
+            return Ok();
+        }
+
     }
 }
