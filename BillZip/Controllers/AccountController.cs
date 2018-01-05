@@ -5,6 +5,7 @@ using Identity.Infrastructure.Repos;
 using Microsoft.Extensions.Options;
 using System;
 using Microsoft.AspNetCore.Authorization;
+using System.Collections.Generic;
 
 namespace BillZip.Controllers
 {
@@ -30,9 +31,15 @@ namespace BillZip.Controllers
             
             //create our new User
             var user = new ApplicationUser(dto.UserName, dto.Password, dto.ConfirmPassword);
-            //TODO: make sure these claims aren't hard coded.  They need to be passed in from the client
-            user.AddClaim(Policies.Landlord.RequireClaim, Policies.Landlord.RequiredValues[0]);
-            user.AddClaim(Policies.Admin.RequireClaim, "");
+            
+            if (dto.Claims != null && dto.Claims.Count > 0)
+            {
+                foreach (var claim in dto.Claims)
+                {
+                    user.AddClaim(claim.Key, claim.Value);
+                }
+            }
+
             _applicationUserRepository.Add(user);
             _applicationUserRepository.Save();
 
@@ -40,11 +47,11 @@ namespace BillZip.Controllers
             return Ok(UserJwtToken.GetToken(dto.UserName, user.Claims, _appSettings.tokenExpirationInMinutes));
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         [Authorize(Policy = Policies.Admin.PolicyName)]
-        public IActionResult Delete([FromBody] string userName)
+        public IActionResult Delete(Guid id)
         {
-            var user = _applicationUserRepository.Get(userName);
+            var user = _applicationUserRepository.GetById(id);
             if (user == null)
                 return BadRequest();
 
@@ -52,6 +59,50 @@ namespace BillZip.Controllers
             _applicationUserRepository.Save();
 
             return Ok();
+        }
+
+        [HttpPatch]
+        [Authorize(Policy = Policies.Admin.PolicyName)]
+        public IActionResult Patch([FromBody] Dtos.PatchUserDto dto)
+        {
+            var user = _applicationUserRepository.Get(dto.Id);
+            if (user == null)
+                return BadRequest();
+
+            if (dto.UserName.Trim() != user.UserName.Trim())
+                user.OverwriteUserName(dto.UserName);
+
+            if (dto.Claims != null && dto.Claims.Count > 0)
+            {
+                user.ClearClaims();
+                foreach (var claim in dto.Claims)
+                {
+                    user.AddClaim(claim.Key, claim.Value);
+                }
+            }
+            _applicationUserRepository.Save();
+
+            return Ok();
+        }
+
+        [HttpGet]
+        [Authorize]
+        public Dtos.UserResponseDto GetUser(string userName)
+        {
+            var user = _applicationUserRepository.Get(userName);
+            if (user == null)
+                return null;
+
+            var userResponseDto = new Dtos.UserResponseDto {
+                Id = user.Id,
+                UserName = user.UserName,
+                LastLogin = user.LastLogin,
+                DateCreated = user.DateCreated
+            };
+            userResponseDto.Claims = new Dictionary<string, string>();
+            foreach (var userClaim in user.Claims)
+                userResponseDto.Claims.Add(userClaim.claimKey, userClaim.claimValue);
+            return userResponseDto;
         }
 
     }

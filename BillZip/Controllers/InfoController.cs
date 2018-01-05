@@ -8,7 +8,7 @@ namespace BillZip.Controllers
 {
     [Produces("application/json")]
     [Route("api/info")]
-    [Authorize(Policy = Policies.Landlord.PolicyName)]
+    [Authorize]
 
     public class InfoController : Controller
     {

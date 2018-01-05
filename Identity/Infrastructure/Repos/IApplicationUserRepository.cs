@@ -14,6 +14,7 @@ namespace Identity.Infrastructure.Repos
         PagedResult<ApplicationUser> FindByUserName(string text, QueryConstraints<ApplicationUser> constraints);
         bool UserAuthenticates(string userName, string password);
         ApplicationUser Get(string userName);
+        ApplicationUser GetById(Guid id);
     }
 
 
@@ -61,6 +62,11 @@ namespace Identity.Infrastructure.Repos
         public ApplicationUser Get(string userName)
         {
             return _dbContext.ApplicationUsers.Include(x => x.Claims).Where(x => x.UserName == userName).FirstOrDefault();
+        }
+
+        public ApplicationUser GetById(Guid id)
+        {
+            return _dbContext.ApplicationUsers.Include(x => x.Claims).Where(x => x.Id == id).FirstOrDefault();
         }
 
         public bool UserAuthenticates(string userName, string password)

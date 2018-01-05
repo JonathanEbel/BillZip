@@ -53,6 +53,17 @@ namespace Identity.Models
             });
         }
 
+        public void ClearClaims()
+        {
+            if (Claims != null)
+                Claims.Clear();
+        }
+
+        public void OverwriteUserName(string userName)
+        {
+            SetEmailAddressUserName(userName);
+        }
+
         private void SetEmailAddressUserName(string userName)
         {
             Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");

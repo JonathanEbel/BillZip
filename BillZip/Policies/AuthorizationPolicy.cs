@@ -8,10 +8,10 @@
 namespace BillZip.Policies
 {
 
-    public static class Tenent
+    public static class Tenant
     {
-        public const string PolicyName = "Tenent";
-        public const string RequireClaim = "Tenent";
+        public const string PolicyName = "Tenant";
+        public const string RequireClaim = "Tenant";
         public static string[] RequiredValues = { };
         
     }

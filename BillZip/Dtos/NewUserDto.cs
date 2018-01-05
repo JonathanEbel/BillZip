@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace BillZip.Dtos
 {
@@ -18,5 +19,7 @@ namespace BillZip.Dtos
 
         [Required, Compare("Password", ErrorMessage = "Passwords must match.")]
         public string ConfirmPassword { get; set; }
+
+        public Dictionary<string,string> Claims { get; set; }
     }
 }
