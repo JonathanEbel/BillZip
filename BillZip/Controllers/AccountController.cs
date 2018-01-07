@@ -119,7 +119,23 @@ namespace BillZip.Controllers
             var username = HttpContext.User.Claims.ToList().First(x => x.Type == Constants.IDENTIFYING_CLAIM).Value;
             var user = _applicationUserRepository.Get(username);
 
-            if (username == null)
+            if (user == null)
+                return BadRequest();
+
+            user.UpdatePassword(dto.password, dto.confirmPassword);
+            _applicationUserRepository.Save();
+
+            return Ok();
+        }
+
+
+        [HttpPatch("password/{id}")]
+        [Authorize(Policy = Policies.Admin.PolicyName)]
+        public IActionResult ResetPasswordAdmin([FromBody]ResetPasswordDto dto, Guid id)
+        {
+            var user = _applicationUserRepository.GetById(id);
+
+            if (user == null)
                 return BadRequest();
 
             user.UpdatePassword(dto.password, dto.confirmPassword);
