@@ -129,7 +129,7 @@ namespace BillZip.Controllers
         }
 
 
-        [HttpPatch("password/{id}")]
+        [HttpPatch("{id}/password")]
         [Authorize(Policy = Policies.Admin.PolicyName)]
         public IActionResult ResetPasswordAdmin([FromBody]ResetPasswordDto dto, Guid id)
         {
