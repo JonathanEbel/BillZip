@@ -2,14 +2,13 @@
 using Microsoft.AspNetCore.Authorization;
 using BillZip.AuthModels;
 using BillZip.Provider.JWT;
-using System.Collections.Generic;
 using Identity.Infrastructure.Repos;
 using Microsoft.Extensions.Options;
 
 namespace BillZip.Controllers
 {
     [Produces("application/json")]
-    [Route("api/Token")]
+    [Route("api/token")]
     [AllowAnonymous]
 
     public class TokenController : Controller

@@ -6,10 +6,13 @@ using Microsoft.Extensions.Options;
 using System;
 using Microsoft.AspNetCore.Authorization;
 using System.Collections.Generic;
+using Core.Constants;
+using BillZip.Dtos;
+using System.Linq;
 
 namespace BillZip.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/account")]
     public class AccountController : Controller
     {
         private readonly IApplicationUserRepository _applicationUserRepository;
@@ -22,7 +25,7 @@ namespace BillZip.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody]Dtos.NewUserDto dto)
+        public IActionResult Post([FromBody]NewUserDto dto)
         {
             if (!ModelState.IsValid)
             {
@@ -39,6 +42,9 @@ namespace BillZip.Controllers
                     user.AddClaim(claim.Key, claim.Value);
                 }
             }
+
+            //add our default identifying claim
+            user.AddClaim(Constants.IDENTIFYING_CLAIM, dto.UserName);
 
             _applicationUserRepository.Add(user);
             _applicationUserRepository.Save();
@@ -63,7 +69,7 @@ namespace BillZip.Controllers
 
         [HttpPatch]
         [Authorize(Policy = Policies.Admin.PolicyName)]
-        public IActionResult Patch([FromBody] Dtos.PatchUserDto dto)
+        public IActionResult Patch([FromBody] PatchUserDto dto)
         {
             var user = _applicationUserRepository.Get(dto.Id);
             if (user == null)
@@ -103,6 +109,23 @@ namespace BillZip.Controllers
             foreach (var userClaim in user.Claims)
                 userResponseDto.Claims.Add(userClaim.claimKey, userClaim.claimValue);
             return userResponseDto;
+        }
+
+
+        [HttpPatch("password")]
+        [Authorize]
+        public IActionResult ResetPassword([FromBody]ResetPasswordDto dto)
+        {
+            var username = HttpContext.User.Claims.ToList().First(x => x.Type == Constants.IDENTIFYING_CLAIM).Value;
+            var user = _applicationUserRepository.Get(username);
+
+            if (username == null)
+                return BadRequest();
+
+            user.UpdatePassword(dto.password, dto.confirmPassword);
+            _applicationUserRepository.Save();
+
+            return Ok();
         }
 
     }

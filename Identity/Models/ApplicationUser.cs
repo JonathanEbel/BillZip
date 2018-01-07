@@ -27,9 +27,7 @@ namespace Identity.Models
             SetEmailAddressUserName(userName);
             Id = Guid.NewGuid();
 
-            //one way hash the password and store both the Salt and the hashed password
-            Salt = Crypto.getSalt();
-            Password = Crypto.getHash(password + Salt);
+            SetSaltAndPassword(password);
 
             DateCreated = DateTime.Now;
         }
@@ -75,6 +73,20 @@ namespace Identity.Models
 
         }
 
+        private void SetSaltAndPassword(string password)
+        {
+            //one way hash the password and store both the Salt and the hashed password
+            Salt = Crypto.getSalt();
+            Password = Crypto.getHash(password + Salt);
+        }
+
+        public void UpdatePassword(string password, string confirmPassword)
+        {
+            if (confirmPassword != password)
+                throw new ArgumentException("Password and Confirm Password parameters don't match");
+
+            SetSaltAndPassword(password);
+        }
 
     }
 
